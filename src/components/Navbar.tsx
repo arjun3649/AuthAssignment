@@ -1,6 +1,5 @@
-/* eslint-disable antfu/consistent-list-newline */
 /* eslint-disable style/no-trailing-spaces */
-/* eslint-disable style/jsx-first-prop-new-line */
+
 /* eslint-disable style/space-infix-ops */
 /* eslint-disable style/multiline-ternary */
 /* eslint-disable tailwindcss/classnames-order */
@@ -18,7 +17,7 @@ function Navbar() {
     <header className="flex items-center justify-between bg-blue-500 h-16 px-4">
       {/* Logo Section */}
       <Link href="/" className="flex items-center space-x-2">
-        <div className="bg-[#fff] p-2 rounded">
+        <div className="bg-white p-2 rounded">
           <Image
             alt="Dropbox Logo"
             src="https://icons.veryicon.com/png/o/miscellaneous/simple-line-icon/authentication-16.png"

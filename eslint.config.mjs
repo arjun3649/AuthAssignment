@@ -1,58 +1,84 @@
-import antfu from '@antfu/eslint-config';
-import nextPlugin from '@next/eslint-plugin-next';
-import jestDom from 'eslint-plugin-jest-dom';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
-import playwright from 'eslint-plugin-playwright';
-import tailwind from 'eslint-plugin-tailwindcss';
-import testingLibrary from 'eslint-plugin-testing-library';
-
-export default antfu({
-  react: true,
-  typescript: true,
-
-  lessOpinionated: true,
-  isInEditor: false,
-
-  stylistic: {
-    semi: true,
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
   },
-
-  formatters: {
-    css: true,
-  },
-
-  ignores: [
-    'migrations/**/*',
-    'next-env.d.ts',
+  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports'],
+  extends: [
+    'eslint:recommended',
+    'next',
+    'next/core-web-vitals',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
-}, ...tailwind.configs['flat/recommended'], jsxA11y.flatConfigs.recommended, {
-  plugins: {
-    '@next/next': nextPlugin,
-  },
   rules: {
-    ...nextPlugin.configs.recommended.rules,
-    ...nextPlugin.configs['core-web-vitals'].rules,
+    'no-unused-vars': 'off',
+    'no-console': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react/no-unescaped-entities': 'off',
+
+    'react/display-name': 'off',
+    'react/jsx-curly-brace-presence': [
+      'warn',
+      { props: 'never', children: 'never' },
+    ],
+
+    //#region  //*=========== Unused Import ===========
+    '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'warn',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
+    //#endregion  //*======== Unused Import ===========
+
+    //#region  //*=========== Import Sort ===========
+    'simple-import-sort/exports': 'warn',
+    'simple-import-sort/imports': [
+      'warn',
+      {
+        groups: [
+          // ext library & side effect imports
+          ['^@?\\w', '^\\u0000'],
+          // {s}css files
+          ['^.+\\.s?css$'],
+          // Lib and hooks
+          ['^@/lib', '^@/hooks'],
+          // static data
+          ['^@/data'],
+          // components
+          ['^@/components', '^@/container'],
+          // zustand store
+          ['^@/store'],
+          // Other imports
+          ['^@/'],
+          // relative paths up until 3 level
+          [
+            '^\\./?$',
+            '^\\.(?!/?$)',
+            '^\\.\\./?$',
+            '^\\.\\.(?!/?$)',
+            '^\\.\\./\\.\\./?$',
+            '^\\.\\./\\.\\.(?!/?$)',
+            '^\\.\\./\\.\\./\\.\\./?$',
+            '^\\.\\./\\.\\./\\.\\.(?!/?$)',
+          ],
+          ['^@/types'],
+          // other that didnt fit in
+          ['^'],
+        ],
+      },
+    ],
+    
   },
-}, {
-  files: [
-    '**/*.test.ts?(x)',
-  ],
-  ...testingLibrary.configs['flat/react'],
-  ...jestDom.configs['flat/recommended'],
-}, {
-  files: [
-    '**/*.spec.ts',
-    '**/*.e2e.ts',
-  ],
-  ...playwright.configs['flat/recommended'],
-}, {
-  rules: {
-    'antfu/no-top-level-await': 'off', // Allow top-level await
-    'style/brace-style': ['error', '1tbs'], // Use the default brace style
-    'ts/consistent-type-definitions': ['error', 'type'], // Use `type` instead of `interface`
-    'react/prefer-destructuring-assignment': 'off', // Vscode doesn't support automatically destructuring, it's a pain to add a new variable
-    'node/prefer-global/process': 'off', // Allow using `process.env`
-    'test/padding-around-all': 'error', // Add padding in test files
-    'test/prefer-lowercase-title': 'off', // Allow using uppercase titles in test titles
+  globals: {
+    React: true,
+    JSX: true,
   },
-});
+};
